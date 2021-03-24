@@ -38,6 +38,7 @@ class User {
         this.books = [];
         this.rentals = [];
         this.wishlist = [];
+        this.genres = [];
     }
     getBook() {
         data.forEach((element) => {
@@ -77,6 +78,13 @@ class User {
         this.wishlist = result;
         console.log(this.wishlist);
     }
+
+    getGenre() {
+        dataGenre.forEach((element) => {
+            let genre = new Genre(element)
+            this.genres.push(genre)
+        })
+    }
 }
 
 class Book {
@@ -89,7 +97,7 @@ class Book {
     }
 
     showTitle() {
-        return `Le titre du livre est ${this.bookName}`;
+        console.log(`Le titre du livre est ${this.bookName}`);
     }
 
     rentBook() {
@@ -150,7 +158,44 @@ class Admin extends User {
             }
         });
     }
+
+    createGenre(genre) {
+        let newGenre = new Genre(genre);
+        newGenre.addGenre(genre)
+    }
+
+    deleteGenre(genre) {
+        let indexToDelete = dataGenre.findIndex((element) => element.genreId === genre.genreId)
+        dataGenre.splice(indexToDelete, 1)
+    }
+
+    editGenre(modifiedGenre) {
+        let indexToEdit, editGenre;
+        dataGenre.forEach((element, index) => {
+            if (element.genreId === modifiedGenre.genreId) {
+                for (const property in element) {
+                    if (element[property] !== modifiedGenre[property]) {
+                        element[property] = modifiedGenre[property]
+                    }
+                    console.log('property', element[property])
+                }
+            }
+        })
+    }
 }
+
+class Genre {
+    constructor(id, name){
+        this.genreId = id;
+        this.genreName = name;
+    }
+
+    addGenre(genre) {
+        dataGenre.push(genre)
+    }
+    
+}
+
 let clement = new User(1, "Clement", "Clement@gmail.com", "tutu");
 let Yoram = new Admin(2, "Yoram", "Yoram@gmail.com", "tutu");
 
@@ -177,3 +222,19 @@ Yoram.editBook({
 //clement.rent("Lord of the ring");
 
 //clement.getRental();
+Yoram.createGenre({
+    genreId: 3, 
+    genreName: 'novel'
+})
+
+Yoram.deleteGenre({
+    genreId: 1
+})
+
+Yoram.editGenre({
+    genreId: 2,
+    genreName: "théatre"
+})
+console.log('après editGenre', dataGenre)
+clement.books[0].showTitle()
+console.log('clementbooks', clement.books[0])
