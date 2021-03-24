@@ -15,6 +15,10 @@ const data = [
   },
 ];
 
+const dataRental = [
+  { rentalDate: new Date(), userId: 1, bookName: "Harry Potter" },
+];
+
 class User {
   constructor(id, name, email, password) {
     this.userId = id;
@@ -22,6 +26,7 @@ class User {
     this.userEmail = email;
     this.userPassword = password;
     this.books = [];
+    this.rental = [];
   }
   getBook() {
     data.forEach((element) => {
@@ -34,9 +39,11 @@ class User {
   rent(bookName) {
     this.getBook();
     let result = this.books.filter((element) => element.bookName === bookName);
-
     let selectedBook = result[0];
     selectedBook.rentBook();
+  }
+  getRental(userId) {
+    dataRental.filter((element) => element.userId === this.userId);
   }
 }
 
@@ -54,13 +61,23 @@ class Book {
   }
 
   rentBook() {
-    console.log(this.bookAmount, "AMOUNT");
+    if (this.bookAmount === 0) {
+      console.log(`${this.bookName} n'est plus en stock`);
+    }
     this.bookAmount = this.bookAmount - 1;
-    console.log(this.bookAmount, "AMOUNT2");
-    console.log(this, "THIS");
+  }
+}
+class Rental {
+  rentalDate;
+  constructor(userId, bookName) {
+    this.userId = userId;
+    this.bookName = bookName;
+  }
+  addRental() {
+    this.rentalDate = new Date();
   }
 }
 
 let clement = new User(1, "Clement", "Clement@gmail.com", "tutu");
 
-clement.rent("Lord of the ring");
+clement.rent("Harry Potter");
