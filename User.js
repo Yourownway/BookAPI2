@@ -13,16 +13,20 @@ const data = [
     bookCategorie: "aventure fantastique",
     bookGenre: "roman",
   },
+  {
+    bookName: "Les 7 nains",
+    bookDescription: "ils sont nombreux",
+    bookAmount: 1,
+    bookCategorie: "fantastique",
+    bookGenre: "poésie",
+  }
 ];
 
 const dataRental = [
   { rentalId: 1, rentalDate: new Date(), userId: 1, bookName: "Harry Potter" },
 ];
 
-const dataCategorie = [
-  { categorieId: 1, categorieName: "aventure" },
-  { categorieId: 2, categorieName: "fantastique" },
-];
+const dataCategorie = [];
 const dataGenre = [
   { genreId: 1, genreName: "roman" },
   { genreId: 2, genreName: "poésie" },
@@ -61,6 +65,12 @@ class User {
 
     this.rentals.push(...result);
   }
+
+  getBookByCategory(id) {
+    const selectedCategorie = dataCategorie.filter(categorie => categorie.categorieId === id)[0];
+    return selectedCategorie;
+  }
+
 }
 
 class Book {
@@ -123,9 +133,50 @@ class Admin extends User {
       }
     });
   }
+
+  addCategory(id, name) {
+    const newCategorie = new Category(id, name)
+    dataCategorie.push(newCategorie)
+    console.log(dataCategorie);
+  }
+
+  deleteCategory(id) {
+    let indexToDelete = dataCategorie.findIndex((categorie) => categorie.categorieId === id);
+    dataCategorie.splice(indexToDelete, 1);
+  }
+
+   editCategoryOfBook(id, name) {
+     let modifiedCategorie = this.getBookByCategory(id)
+     modifiedCategorie.categorieName = name
+    dataCategorie.forEach((categorie) => {
+      if (categorie.categorieId === modifiedCategorie.categorieId) {
+        for (const property in categorie) {
+          if (categorie[property] !== modifiedCategorie[property]) {
+            categorie[property] = modifiedCategorie[property];
+          }
+        }
+      }
+    });
+    console.log('new dataCategory', dataCategorie);
+   }
+
 }
+
+class Category {
+  constructor(categorieId, categorieName) {
+    this.categorieId = categorieId
+    this.categorieName = categorieName;
+  }
+
+
+
+}
+
 let clement = new User(1, "Clement", "Clement@gmail.com", "tutu");
 let Yoram = new Admin(2, "Yoram", "Yoram@gmail.com", "tutu");
+
+let didier = new Admin(3, 'Didier', 'didier@gmail.com', 'zetrt')
+
 Yoram.createBook({
   bookName: "Les misérables",
   bookDescription: "super cool",
@@ -133,7 +184,7 @@ Yoram.createBook({
   bookCategorie: "fantastique",
   bookGenre: "roman",
 });
-console.log("Data", data);
+// console.log("Data", data);
 Yoram.editBook({
   bookName: "Harry Potter",
   bookDescription: "histoire d'amour",
@@ -141,8 +192,14 @@ Yoram.editBook({
   bookCategorie: "aventure fantastique",
   bookGenre: "roman",
 });
-console.log("EDITDATA", data);
+// console.log("EDITDATA", data);
 //Yoram.deleteBook("Harry Potter");
 //clement.rent("Lord of the ring");
 
 //clement.getRental();
+// clement.getBookByCategory()
+// didier.editCategoryOfBook()
+Yoram.addCategory(1, 'Aventure')
+Yoram.addCategory(2, 'Fantastique')
+Yoram.addCategory(3, 'Policier')
+ Yoram.editCategoryOfBook(1, 'BD')
