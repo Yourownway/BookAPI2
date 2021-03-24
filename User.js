@@ -3,20 +3,29 @@ const data = [
     bookName: "Lord of the ring",
     bookDescription: "super livre",
     bookAmount: 2,
-    bookCategorie: "fantastique",
+    bookCategorie: "aventure fantastique",
     bookGenre: "roman",
   },
   {
     bookName: "Harry Potter",
     bookDescription: "histoire d'un sorcier",
     bookAmount: 0,
-    bookCategorie: "fantastique",
+    bookCategorie: "aventure fantastique",
     bookGenre: "roman",
   },
 ];
 
 const dataRental = [
-  { rentalDate: new Date(), userId: 1, bookName: "Harry Potter" },
+  { rentalId: 1, rentalDate: new Date(), userId: 1, bookName: "Harry Potter" },
+];
+
+const dataCategorie = [
+  { categorieId: 1, categorieName: "aventure" },
+  { categorieId: 2, categorieName: "fantastique" },
+];
+const dataGenre = [
+  { genreId: 1, genreName: "roman" },
+  { genreId: 2, genreName: "poésie" },
 ];
 
 class User {
@@ -51,7 +60,6 @@ class User {
     let result = dataRental.filter((element) => element.userId === this.userId);
 
     this.rentals.push(...result);
-    console.log("select Rent", this.rentals);
   }
 }
 
@@ -74,6 +82,9 @@ class Book {
     }
     this.bookAmount = this.bookAmount - 1;
   }
+  addBook(book) {
+    data.push(book);
+  }
 }
 class Rental {
   rentalDate = new Date();
@@ -86,7 +97,52 @@ class Rental {
   }
 }
 
+class Admin extends User {
+  constructor(id, name, email, password, role = "Admin") {
+    super(id, name, email, password);
+    this.adminRole = role;
+  }
+  createBook(book) {
+    let newBook = new Book(book);
+    newBook.addBook(newBook);
+  }
+  deleteBook(name) {
+    let indexToDelete = data.findIndex((element) => element.bookName === name);
+    data.splice(indexToDelete, 1);
+  }
+  editBook(modifiedBook) {
+    let indexToEdit, editBook;
+    data.forEach((element, index) => {
+      if (element.bookName === modifiedBook.bookName) {
+        indexToEdit = index;
+        for (const property in element) {
+          if (element[property] !== modifiedBook[property]) {
+            element[property] = modifiedBook[property];
+          }
+        }
+      }
+    });
+  }
+}
 let clement = new User(1, "Clement", "Clement@gmail.com", "tutu");
+let Yoram = new Admin(2, "Yoram", "Yoram@gmail.com", "tutu");
+Yoram.createBook({
+  bookName: "Les misérables",
+  bookDescription: "super cool",
+  bookAmount: 3,
+  bookCategorie: "fantastique",
+  bookGenre: "roman",
+});
+console.log("Data", data);
+Yoram.editBook({
+  bookName: "Harry Potter",
+  bookDescription: "histoire d'amour",
+  bookAmount: 0,
+  bookCategorie: "aventure fantastique",
+  bookGenre: "roman",
+});
+console.log("EDITDATA", data);
+//Yoram.deleteBook("Harry Potter");
+//clement.rent("Lord of the ring");
 
-clement.rent("Lord of the ring");
-clement.getRental();
+//clement.getRental();
